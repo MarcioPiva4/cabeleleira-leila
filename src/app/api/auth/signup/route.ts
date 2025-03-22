@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         email,
         telefone,
         senha: hashedPassword,
-        role: role || "USER",
+        role: "ADMIN",
       },
     });
 

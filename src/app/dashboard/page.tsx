@@ -1,109 +1,158 @@
-'use client'
-import { useState, useEffect } from "react";
-import Link from "next/link";
+'use client';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
-// Dados mockados para agendamentos (esses dados devem ser gerenciados via API)
-const mockAppointments = [
-  {
-    id: 1,
-    service: "Corte de Cabelo",
-    date: "2025-03-25T10:00:00",
-    status: "Confirmado",
-  },
-  {
-    id: 2,
-    service: "Manicure",
-    date: "2025-03-27T14:00:00",
-    status: "Pendente",
-  },
-];
+interface Agendamento {
+  id: string;
+  servico: { nome: string };
+  dataAgendamento: string;
+  status: string;
+}
 
-export default function ClientDashboard() {
-  const [appointments, setAppointments] = useState(mockAppointments);
-  const [newService, setNewService] = useState("");
-  const [newDate, setNewDate] = useState("");
+interface Servico {
+  id: string;
+  nome: string;
+  descricao: string;
+  preco: number;
+}
 
-  // Função para agendar um novo serviço
-  const handleNewAppointment = () => {
-    const newAppointment = {
-      id: appointments.length + 1,
-      service: newService,
-      date: newDate,
-      status: "Pendente",
-    };
-    setAppointments([...appointments, newAppointment]);
-    setNewService("");
-    setNewDate("");
+export default function UserDashboard() {
+  const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [servicoSelecionado, setServicoSelecionado] = useState<string>("");
+  const [dataAgendamento, setDataAgendamento] = useState<string>("");
+  const router = useRouter();
+
+  useEffect(() => {
+    fetch("/api/agendamentos")
+      .then((res) => res.json())
+      .then((data) => setAgendamentos(data));
+
+    fetch("/api/servicos")
+      .then((res) => res.json())
+      .then((data) => setServicos(data));
+  }, []);
+
+  const handleAgendar = async () => {
+  
+    if (!servicoSelecionado || !dataAgendamento) {
+      alert("Por favor, selecione um serviço e uma data.");
+      return;
+    }
+  
+    const res = await fetch("/api/agendamentos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        servicoId: servicoSelecionado,
+        dataAgendamento,
+      }),
+    });
+  
+    if (res.ok) {
+      alert("Agendamento realizado com sucesso!");
+      setDataAgendamento("");
+      setServicoSelecionado("");
+  
+      // Atualiza a lista de agendamentos
+      const novoAgendamento = await res.json();
+      setAgendamentos((prev) => [...prev, novoAgendamento]);
+    } else {
+      alert("Erro ao agendar serviço.");
+    }
+  };
+  const handleLogout = async () => {
+    Cookies.remove("token");
+    Cookies.remove("session");
+    await fetch("/api/logout", { method: "POST" });
+    router.push("/login");
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Cabeçalho */}
-      <h1 className="text-4xl font-semibold text-center mb-8">Sua Dashboard</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-semibold">Dashboard do Usuário</h1>
+        <button 
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+          onClick={handleLogout}
+        >
+          Sair
+        </button>
+      </div>
 
-      {/* Agendamentos do Cliente */}
+      {/* Agendamentos */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Seus Agendamentos</h2>
+        <h2 className="text-2xl font-semibold mb-4">Meus Agendamentos</h2>
         <table className="min-w-full bg-white rounded-lg shadow-lg">
           <thead>
             <tr className="bg-gray-100">
               <th className="py-2 px-4">Serviço</th>
               <th className="py-2 px-4">Data</th>
               <th className="py-2 px-4">Status</th>
-              <th className="py-2 px-4">Ações</th>
             </tr>
           </thead>
           <tbody>
-            {appointments.map((appointment) => (
-              <tr key={appointment.id}>
-                <td className="py-2 px-4">{appointment.service}</td>
-                <td className="py-2 px-4">{new Date(appointment.date).toLocaleString()}</td>
-                <td className="py-2 px-4">{appointment.status}</td>
-                <td className="py-2 px-4">
-                  {/* Ação de alteração (somente se o agendamento estiver dentro da regra de 2 dias) */}
-                  <button
-                    className="text-blue-600 hover:text-blue-800"
-                    disabled={new Date(appointment.date) <= new Date()}
-                  >
-                    Alterar
-                  </button>
-                  <button className="ml-4 text-red-600 hover:text-red-800">Cancelar</button>
-                </td>
+            {agendamentos.map((agendamento) => (
+              <tr key={agendamento.id}>
+                <td className="py-2 px-4">{agendamento.servico.nome}</td>
+                <td className="py-2 px-4">{new Date(agendamento.dataAgendamento).toLocaleString()}</td>
+                <td className="py-2 px-4">{agendamento.status}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Agendar Novo Serviço */}
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold mb-4">Agendar Novo Serviço</h3>
+      {/* Agendamento de Serviços */}
+      <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h3 className="text-xl font-semibold mb-4">Agendar Serviço</h3>
         <div className="mb-4">
-          <label htmlFor="service" className="block text-sm text-gray-600">Serviço</label>
-          <input
-            type="text"
-            id="service"
-            value={newService}
-            onChange={(e) => setNewService(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md"
-          />
+          <label className="block text-gray-700">Selecione um serviço:</label>
+          <select
+            value={servicoSelecionado}
+            onChange={(e) => setServicoSelecionado(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+          >
+            <option value="">Escolha um serviço</option>
+            {servicos.map((servico) => (
+              <option key={servico.id} value={servico.id}>
+                {servico.nome} - R$ {servico.preco.toFixed(2)}
+              </option>
+            ))}
+          </select>
         </div>
+
         <div className="mb-4">
-          <label htmlFor="date" className="block text-sm text-gray-600">Data</label>
+          <label className="block text-gray-700">Selecione a data:</label>
           <input
             type="datetime-local"
-            id="date"
-            value={newDate}
-            onChange={(e) => setNewDate(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md"
+            value={dataAgendamento}
+            onChange={(e) => setDataAgendamento(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
+
         <button
-          onClick={handleNewAppointment}
-          className="bg-pink-600 text-white px-6 py-3 rounded-full hover:bg-pink-700 transition-all"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={handleAgendar}
         >
-          Agendar
+          Agendar Serviço
         </button>
+      </div>
+
+      {/* Serviços Disponíveis */}
+      <div className="bg-white p-6 rounded-lg shadow-lg">
+        <h3 className="text-xl font-semibold mb-4">Serviços Disponíveis</h3>
+        <ul>
+          {servicos.map((servico) => (
+            <li key={servico.id} className="mb-2">
+              {servico.nome} - R$ {servico.preco.toFixed(2)}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

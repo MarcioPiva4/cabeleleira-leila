@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Cookies from "js-cookie"; // Importa js-cookie
+import Cookies from "js-cookie";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,11 +27,16 @@ export default function Login() {
         return;
       }
 
-      // Salva o token no cookie
+      // Salva o token e a role no cookie
       Cookies.set("token", data.token, { expires: 7, secure: true, sameSite: "Strict" });
+      Cookies.set("role", data.role, { expires: 7, secure: true, sameSite: "Strict" });
 
-      // Redirecionamento SPA
-      router.push("/dashboard");
+      // Redirecionamento baseado na role
+      if (data.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       setError("Erro interno, tente novamente!");
     }

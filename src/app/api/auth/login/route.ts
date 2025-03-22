@@ -32,12 +32,23 @@ export async function POST(req: Request) {
       { expiresIn: "7d" }
     );
 
-    const response = NextResponse.json({ success: true, user: { id: user.id, nome: user.nome, role: user.role } });
-    response.headers.set(
+    // Cria a resposta com os cookies corretamente configurados
+    const response = NextResponse.json({ 
+      token, 
+      user: { id: user.id, nome: user.nome, role: user.role }
+    });
+
+    response.headers.append(
       "Set-Cookie",
       `token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`
     );
-    return NextResponse.json({ token, user: { id: user.id, nome: user.nome, role: user.role } });
+
+    response.headers.append(
+      "Set-Cookie",
+      `role=${user.role}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`
+    );
+
+    return response;
   } catch (error) {
     return NextResponse.json({ error: "Erro interno do servidor!" }, { status: 500 });
   }
