@@ -43,11 +43,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-300 via-pink-200 to-pink-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-600 to-orange-400">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm mx-4">
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">Login</h2>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -59,7 +59,7 @@ export default function Login() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-pink-400"
+              className="text-black mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />
           </div>
@@ -73,14 +73,14 @@ export default function Login() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-pink-400"
+              className="text-black mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-700 transition-all"
+            className="w-full bg-orange-400 text-white px-6 py-3 rounded-full shadow-md hover:bg-orange-500 transition-all font-medium"
           >
             Entrar
           </button>
@@ -89,7 +89,10 @@ export default function Login() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Não tem uma conta?{" "}
-            <Link href="/signup" className="text-blue-600 hover:text-blue-700">
+            <Link 
+              href="/signup" 
+              className="text-orange-400 hover:text-orange-500 font-medium"
+            >
               Cadastre-se aqui
             </Link>
           </p>

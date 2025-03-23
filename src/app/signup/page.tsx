@@ -29,7 +29,7 @@ export default function SignUp() {
           email,
           telefone,
           senha: password,
-          role: "USER", // Define que este cadastro é de cliente comum
+          role: "USER",
         }),
       });
 
@@ -49,9 +49,10 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-300 via-pink-200 to-pink-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-600 to-orange-400">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm mx-4">
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">Cadastro</h2>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="nome" className="block text-sm font-medium text-gray-700">
@@ -62,7 +63,7 @@ export default function SignUp() {
               id="nome"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm"
+              className="text-black mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />
           </div>
@@ -76,7 +77,7 @@ export default function SignUp() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm"
+              className="text-black mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />
           </div>
@@ -90,7 +91,7 @@ export default function SignUp() {
               id="telefone"
               value={telefone}
               onChange={(e) => setTelefone(e.target.value)}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm"
+              className="text-black mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent"
             />
           </div>
 
@@ -103,7 +104,7 @@ export default function SignUp() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm"
+              className="text-black mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />
           </div>
@@ -117,14 +118,14 @@ export default function SignUp() {
               id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm"
+              className="text-black mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-700 transition-all"
+            className="w-full bg-orange-400 text-white px-6 py-3 rounded-full shadow-md hover:bg-orange-500 transition-all font-medium disabled:opacity-70"
             disabled={loading}
           >
             {loading ? "Cadastrando..." : "Cadastrar"}
@@ -134,7 +135,10 @@ export default function SignUp() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Já tem uma conta?{" "}
-            <Link href="/login" className="text-blue-600 hover:text-blue-700">
+            <Link 
+              href="/login" 
+              className="text-orange-400 hover:text-orange-500 font-medium"
+            >
               Faça login aqui
             </Link>
           </p>
