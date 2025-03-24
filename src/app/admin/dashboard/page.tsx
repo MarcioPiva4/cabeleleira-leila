@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import AdminDashboardCharts from "@/components/AdminGraphics";
+import { UserLayout } from "@/components/Dashboard/UserLayout";
+import AdminDashboardCharts from "@/components/Dashboard/AdminGraphics";
 
 type Agendamento = {
   id: string;
@@ -147,19 +148,7 @@ export default function AdminDashboard() {
   if (error) return <p className="text-center p-8 text-red-500">{error}</p>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-semibold text-purple-600">
-          Dashboard Administrativo
-        </h1>
-        <button
-          onClick={handleLogout}
-          className="bg-orange-400 text-white px-6 py-2 rounded-full shadow-md hover:bg-orange-500 transition-all"
-        >
-          Sair
-        </button>
-      </div>
+    <UserLayout title="Dashboard do Administrador"> 
 
       {/* Gráficos */}
       <AdminDashboardCharts agendamentos={agendamentos} />
@@ -354,6 +343,7 @@ export default function AdminDashboard() {
           ))}
         </div>
       </div>
-    </div>
+
+    </UserLayout>
   );
 }

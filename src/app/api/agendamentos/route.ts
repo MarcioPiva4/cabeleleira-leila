@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const cookieStore = cookies();
     const jwtToken = (await cookieStore).get("token")?.value;
-    const role = (await cookieStore).get("role")?.value; // Obtendo a role dos cookies
+    const role = (await cookieStore).get("role")?.value;
 
     if (!jwtToken) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
